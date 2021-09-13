@@ -16,6 +16,7 @@ const data = {
       {
         items: [
           {
+            animation: { type: 'Shades', duration: 3 },
             type: 'video',
             width: 800,
             height: 600,
@@ -32,6 +33,7 @@ const data = {
       {
         items: [
           {
+            animation: { type: 'Shades', duration: 3 },
             params: {
               file: '/1.mkv',
               audit: false,
@@ -44,6 +46,7 @@ const data = {
             y: 0,
           },
           {
+            animation: { type: 'Shades', duration: 3 },
             type: 'image',
             width: 371,
             height: 371,
@@ -64,6 +67,7 @@ const data = {
       {
         items: [
           {
+            animation: { type: 'BackInDown', duration: 5 },
             type: 'video',
             width: 800,
             height: 600,
@@ -76,6 +80,7 @@ const data = {
             },
           },
           {
+            animation: { type: 'BackInDown', duration: 5 },
             type: 'text',
             width: 218,
             height: 96,
@@ -100,6 +105,7 @@ const data = {
             },
           },
           {
+            animation: { type: 'Shades', duration: 5 },
             type: 'datetime',
             width: 245,
             height: 100,

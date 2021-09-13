@@ -1,7 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Layer } from 'react-konva';
+import React, { useEffect, useState, Fragment } from 'react';
 import * as Elements from '../Elements';
-import Konva from 'konva';
 
 const Scene = ({
   scene,
@@ -12,13 +10,9 @@ const Scene = ({
   visible,
   jump,
   jumpTime,
+  timeSum,
 }) => {
-  const layer = useRef();
   const [seeked, setSeeked] = useState(scene.map(() => true)); //子组件的seeked状态
-  useEffect(() => {
-    const anim = new Konva.Animation(() => {}, layer.current);
-    anim.start();
-  }, []);
 
   // 根据type值渲染不同组件
   const getContainer = (type) => {
@@ -26,7 +20,7 @@ const Scene = ({
     return Elements[key];
   };
 
-  // 子组件通过这函数改变子组件的seeked状态
+  // 子组件通过此函数改变子组件的seeked状态
   const onSeeked = (val, index) => {
     setSeeked((seeked) => {
       const cloneSeeked = [...seeked];
@@ -40,6 +34,7 @@ const Scene = ({
     if (jump) {
       onSceneSeeked(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jump]);
 
   // 当自身场景下的所有组件seeked都为true时，将自身场景seeked设成true
@@ -52,15 +47,11 @@ const Scene = ({
     } else {
       onSceneSeeked(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seeked]);
 
   return (
-    <Layer
-      visible={visible}
-      ref={(element) => {
-        layer.current = element;
-      }}
-    >
+    <Fragment>
       {scene &&
         scene.map((item, index) => {
           const Container = getContainer(item.type);
@@ -73,11 +64,13 @@ const Scene = ({
               {...item}
               onSeeked={(val) => onSeeked(val, index)}
               play={play}
+              timeSum={timeSum}
+              time={time}
               speed={speed}
             />
           );
         })}
-    </Layer>
+    </Fragment>
   );
 };
 

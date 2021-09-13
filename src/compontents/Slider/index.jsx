@@ -3,9 +3,8 @@ import './index.css';
 import { timeTranslate } from '../../utils';
 
 const Slider = (props) => {
-  const { time, scenesDurationSum, setProgress, setPlay, setSpeed, play } =
+  const { time, scenesDurationSum, setProgress, onPlayPause, setSpeed, play } =
     props;
-
   const options = useRef();
   const [playSpeed, setPlaySpeed] = useState('倍速');
   const [sliderTime, setSliderTime] = useState(time);
@@ -28,9 +27,6 @@ const Slider = (props) => {
     setSliderTime(time);
   };
 
-  const onClick = () => {
-    setPlay((play) => !play);
-  };
   const onMouseEnter = () => {
     if (options.current.style.display === 'none')
       options.current.style.display = 'block';
@@ -50,11 +46,11 @@ const Slider = (props) => {
   return (
     <div id='video-slider' onMouseLeave={onMouseLeave}>
       {play && (
-        <div id='video-btn-pause' onClick={onClick}>
+        <div id='video-btn-pause' onClick={() => onPlayPause()}>
           |&nbsp;&nbsp;|
         </div>
       )}
-      {!play && <div id='video-btn-play' onClick={onClick}></div>}
+      {!play && <div id='video-btn-play' onClick={() => onPlayPause()}></div>}
       <div id='video-progress'>
         <input
           type='range'

@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Image } from 'react-konva';
-
+import { useAnimation } from '../../../utils/myhooks';
+import * as filter from '../../../utils/myFilter';
 function Video(props) {
   const {
     x,
@@ -14,16 +15,18 @@ function Video(props) {
     visible,
     duration,
     jump,
+    time,
     jumpTime,
+    animation,
   } = props;
   const video = useRef();
   const image = useRef();
   const [loaded, setLoaded] = useState(false);
 
-  useEffect(() => {
+  useMemo(() => {
     if (!loaded) return;
     video.current.playbackRate = speed;
-  }, [speed]);
+  }, [loaded, speed]);
 
   useEffect(() => {
     const el = document.createElement('video');
@@ -40,10 +43,10 @@ function Video(props) {
       onSeeked(true);
     });
     video.current = el;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // TODO
-  // 当jump变为true时才触发，导致在跳转态持续中的跳转无效
+  // 跳转态时设置组件为加载中状态并设置video的进度
   useEffect(() => {
     if (jump) {
       onSeeked(false);
@@ -53,6 +56,7 @@ function Video(props) {
         onSeeked(true);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jump, jumpTime]);
 
   useEffect(() => {
@@ -67,11 +71,25 @@ function Video(props) {
     }
   }, [play, loaded, visible]);
 
+  // 动画
+  useAnimation({
+    type: animation?.type,
+    isChangeFrame: true,
+    play,
+    speed,
+    time,
+    node: image.current,
+    jump,
+    visible,
+    duration: animation?.duration / speed,
+  });
+
   return (
     <Image
       visible={visible}
       ref={image}
       image={video.current}
+      filters={[filter[animation?.type]]}
       x={x}
       y={y}
       width={width}

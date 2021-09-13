@@ -2,7 +2,8 @@
   "parser": "babel-eslint",
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
   ],
   "env": {
     "browser": true,
@@ -14,6 +15,8 @@
   },
 
   "rules": {
+    "react-hooks/rules-of-hooks": "error", // 检查 Hook 的规则
+    "react-hooks/exhaustive-deps": "warn", // 检查 effect 的依赖
     //语句强制分号结尾
     // "semi": [2, "none"],
     // 每个函数最多行数
