@@ -44,6 +44,7 @@ const useAnimation = ({
         onReset && onReset();
       },
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration, node, onFinish, onReset, onUpdate, type]);
 
   // 播放动画
@@ -63,8 +64,10 @@ const useAnimation = ({
       // 当前动画的元素不可见时reset动画
       tween.current.reset();
     }
-    if (play) {
+    if (play && !jump) {
       tween.current.play();
+    } else {
+      tween.current.pause();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jump, visible, play, duration, tween]);

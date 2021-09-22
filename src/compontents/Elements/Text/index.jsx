@@ -19,6 +19,7 @@ function Text(props) {
     text,
     jump,
     onSeeked,
+    onLoaded,
     play,
     speed,
     time,
@@ -38,6 +39,10 @@ function Text(props) {
   };
 
   const newAlign = alignArr[align];
+
+  useEffect(() => {
+    onLoaded(true);
+  }, []);
 
   useEffect(() => {
     if (!visible) return;

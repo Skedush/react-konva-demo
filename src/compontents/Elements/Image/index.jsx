@@ -17,6 +17,7 @@ function Image(props) {
     play,
     time,
     animation,
+    onLoaded,
   } = props;
   const img = useRef();
   const image = useRef();
@@ -25,6 +26,7 @@ function Image(props) {
     const el = document.createElement('img');
     el.src = src;
     el.onload = () => {
+      onLoaded(true);
       img.current = el;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -7,12 +7,14 @@ const Scene = ({
   play,
   speed,
   onSeeked: onSceneSeeked,
+  onLoaded: onSceneLoaded,
   visible,
   jump,
   jumpTime,
   timeSum,
 }) => {
   const [seeked, setSeeked] = useState(scene.map(() => true)); //子组件的seeked状态
+  const [loaded, setLoaded] = useState(scene.map(() => false)); //子组件的seeked状态
 
   // 根据type值渲染不同组件
   const getContainer = (type) => {
@@ -26,6 +28,15 @@ const Scene = ({
       const cloneSeeked = [...seeked];
       cloneSeeked[index] = val;
       return cloneSeeked;
+    });
+  };
+
+  // 子组件通过此函数改变子组件的seeked状态
+  const onLoaded = (val, index) => {
+    setLoaded((loaded) => {
+      const cloneLoaded = [...loaded];
+      cloneLoaded[index] = val;
+      return cloneLoaded;
     });
   };
 
@@ -50,6 +61,17 @@ const Scene = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seeked]);
 
+  // 当自身场景下的所有组件loaded都为true时，将自身场景loaded设成true
+  useEffect(() => {
+    const isLoading = loaded.some((state) => {
+      return state === false;
+    });
+    if (!isLoading) {
+      onSceneLoaded(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded]);
+
   return (
     <Fragment>
       {scene &&
@@ -63,6 +85,7 @@ const Scene = ({
               jumpTime={jumpTime}
               {...item}
               onSeeked={(val) => onSeeked(val, index)}
+              onLoaded={(val) => onLoaded(val, index)}
               play={play}
               timeSum={timeSum}
               time={time}

@@ -17,6 +17,8 @@ function Control(props) {
   const [time, setTime] = useState(0); //播放进度以时间毫秒计数
   const [speed, setSpeed] = useState(1); //播放速度
   const [seeked, setSeeked] = useState([]); //场景的seeked状态数组
+  const [ready, setReady] = useState(false); //场景的seeked状态数组
+  const [loaded, setLoaded] = useState([]); //场景loaded状态
   const [jump, setJump] = useState(false); //跳转态，true为跳转中，false则是正常播放或者暂停
   const [jumpTime, setJumpTime] = useState(0); //跳转时间
   const [play, setPlay] = useState(false); //播放状态
@@ -59,11 +61,12 @@ function Control(props) {
     return { width: data.width, height: data.height, scenes };
   };
 
-  //清洗数据
+  //清洗数据与设置状态
   useMemo(() => {
     const cleanData = getCleanData(data);
     setCleanData(cleanData);
     setSeeked(cleanData.scenes.map(() => true));
+    setLoaded(cleanData.scenes.map(() => false));
   }, [data]);
 
   //获取各个场景的duration数组
@@ -97,10 +100,11 @@ function Control(props) {
     setNowSceneIndex(getSceneIndex(time));
   }, [time, scenesDuration, getSceneIndex]);
 
-  // 用户指定播放时间事件
+  // 用户指定播放进度事件
   const setProgress = (jumpTime) => {
     setJumpTime(jumpTime);
     setJump(true);
+    anim.stop();
   };
 
   // 场景通过此函数改变场景的seeked状态
@@ -112,9 +116,18 @@ function Control(props) {
     });
   }, []);
 
+  // 场景通过此函数改变场景的loaded状态
+  const onLoaded = useCallback((val, index) => {
+    setLoaded((loaded) => {
+      const cloneLoaded = [...loaded];
+      cloneLoaded[index] = val;
+      return cloneLoaded;
+    });
+  }, []);
+
   // 所有场景的seeked都为true时再进行画面真实的跳转，并将跳转态设为false
   useEffect(() => {
-    // true表示有场景在加载中，false表示所有场景加载完成
+    // true表示有场景在seeking中，false表示所有场景seeked
     const isSeeking = seeked.some((state) => {
       return state === false;
     });
@@ -122,9 +135,24 @@ function Control(props) {
       setTime(jumpTime);
       setNowSceneIndex(getSceneIndex(jumpTime));
       setJump(false);
+      if (play) {
+        anim.start();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seeked]);
+
+  // 所有场景的loaded都为true时将raedy设为true
+  useEffect(() => {
+    // true表示有场景在加载中，false表示所有场景加载完成
+    const isLoading = loaded.some((state) => {
+      return state === false;
+    });
+    if (!isLoading) {
+      setReady(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded]);
 
   // 根据time与场景index获得对应场景的时间进度，对应场景的时间进度要减去前置场景的时长
   const getSceneTime = (time, index) => {
@@ -166,6 +194,14 @@ function Control(props) {
 
   return (
     <div className='container'>
+      {!ready && (
+        <div
+          className='mask'
+          style={{ width: data.width, height: data.height }}
+        >
+          加载中...
+        </div>
+      )}
       {cleanData && (
         <Stage width={data.width} height={data.height} ref={stage}>
           <Layer
@@ -186,6 +222,7 @@ function Control(props) {
                   timeSum={time}
                   play={play && index === nowSceneIndex}
                   onSeeked={(val) => onSeeked(val, index)}
+                  onLoaded={(val) => onLoaded(val, index)}
                 />
               );
             })}

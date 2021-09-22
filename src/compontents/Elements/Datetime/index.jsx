@@ -19,7 +19,7 @@ function Datetime(props) {
     // onSeeked,
     initialValue = '1990-06-15 00:00:00',
   } = props;
-  const timeData = useRef(moment(initialValue));
+  const timeData = useRef(moment(initialValue, 'YYYY-MM-DD HH:mm:ss'));
 
   const timeFormatClean = timeFormat.replace(/M/g, 'm').replace(/S/g, 's');
 
@@ -32,7 +32,7 @@ function Datetime(props) {
 
   useEffect(() => {
     timeData.current = initialValue
-      ? moment(`${timeData.current.format(dateFormat)}`)
+      ? moment(`${timeData.current.format(dateFormat)}`, 'YYYY-MM-DD HH:mm:ss')
       : moment();
     initialValue && timeData.current.add(timeSum, 'milliseconds');
     setContent(dateTranslate());
