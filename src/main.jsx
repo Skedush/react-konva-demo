@@ -23,7 +23,7 @@ const data = {
             x: 0,
             y: 0,
             params: {
-              file: '/1.mkv',
+              file: '1.mkv',
               audit: false,
               duration: 37000,
             },
@@ -35,7 +35,7 @@ const data = {
           {
             animation: { type: 'Shades', duration: 3 },
             params: {
-              file: '/1.mkv',
+              file: '1.mkv',
               audit: false,
               duration: 37000,
             },
@@ -58,7 +58,7 @@ const data = {
                 type: 24,
                 speed: 'fast',
               },
-              file: './3.gif',
+              file: '3.gif',
               audit: false,
             },
           },
