@@ -1,6 +1,7 @@
 {
   "name": "my-vue-app",
   "version": "0.0.0",
+  "homepage": "https://skedush.github.io/react-konva-demo",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
