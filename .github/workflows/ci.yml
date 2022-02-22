@@ -9,11 +9,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@master
+    
+    - name: Install and Build
+      run: yarn && yarn build
 
     - name: Build and Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
       env:
         ACCESS_TOKEN: ${{ secrets.actions }}
         BRANCH: gh-pages
-        FOLDER: build
-        BUILD_SCRIPT: yarn && yarn build
+        FOLDER: dist
